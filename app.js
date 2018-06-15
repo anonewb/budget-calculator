@@ -1,16 +1,7 @@
 // BUDGET CONTROLLER
 var budgetController = (function() {
 
-  var x = 23;
-  var add = function(a) {
-    return x + a;
-  }
-
-  return {
-    publicAdd: function(b) {
-      return add(b);
-    }
-  }
+  
 
 })(); // IIFE
 
@@ -18,7 +9,26 @@ var budgetController = (function() {
 // UI CONTROLLER
 var UIController = (function() {
 
-  // UI code
+  var DOMSelectors = {
+
+    inputType: '.add__type',
+    inputDesc: '.add__description',
+    inputValue: '.add__value',
+    inputBtn:'.add__btn'
+  }
+
+  return {
+    getInput: function() {
+      return {
+        type: document.querySelector(DOMSelectors.inputType).value, // inc or exp
+        description: document.querySelector(DOMSelectors.inputDesc).value, 
+        value: document.querySelector(DOMSelectors.inputValue).value
+      };
+    },
+    getDOMSelectors: function() {
+      return DOMSelectors;
+    }
+  }
 
 })();
 
@@ -26,9 +36,14 @@ var UIController = (function() {
 // APP CONTROLLER
 var controller = (function(budgetCtrl, UICtrl) { 
 
+  var DOMSelectors = UICtrl.getDOMSelectors();
+
   var ctrlAddItem = function() {
 
     // Get the field input data
+    var input = UICtrl.getInput();
+    console.log(input);
+
     // Add item to the budgetCtrl
     // Add item to the UI
     // Calculate the budget
@@ -37,7 +52,7 @@ var controller = (function(budgetCtrl, UICtrl) {
 
   }
 
-  document.querySelector('.add__btn').addEventListener('click',ctrlAddItem);
+  document.querySelector(DOMSelectors.inputBtn).addEventListener('click', ctrlAddItem);
 
   document.addEventListener('keypress', function(e) {
 
@@ -45,10 +60,8 @@ var controller = (function(budgetCtrl, UICtrl) {
       ctrlAddItem();
     }
 
-  })
 
-  return {
-    
-  }
+
+  });
 
 })(budgetController, UIController);
