@@ -19,7 +19,7 @@ var budgetController = (function() {
 
   //* DATA STRUCTURE
   // Creating a neat data structure to store items and value
-  var data = {
+  var data = { // data means Data Structure
     allItems: {
       exp: [],
       inc: []
@@ -27,6 +27,39 @@ var budgetController = (function() {
     totals: {
       exp: 0,
       inc: 0
+    }
+  }
+
+  return {
+    addItem: function(type, desc, val) {
+      var newItem, ID, typeID;
+      ID=0;
+
+      // [1 2 3 4 5], next ID = 6
+      // [1 2 4 6 9], next ID = 10
+      // ID = last ID + 1
+      // ID = data.allItems[type][data.allItems[type].length - 1].id + 1
+      typeID = data.allItems[type]
+      
+
+      if (typeID.length > 0) {
+        ID = typeID[data.allItems[type].length - 1].id + 1
+      } else {
+        ID = 0;
+      }
+
+      if (type === 'exp') {
+        newItem = new Expense(ID, desc, val);
+      } else if (type === 'inc') {
+        newItem = new Income(ID, desc, val);
+      }
+
+      data.allItems[type].push(newItem);
+
+      return newItem;
+    },
+    dataLog: function() { // Created just to view the private Data Structure
+      console.log(data); // Run 'budgetController.dataLog()' in console to view DS(data obj)
     }
   }
 
@@ -85,6 +118,8 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
     // console.log(input);
 
     // Add item to the budgetCtrl
+    var newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+
     // Add item to the UI
     // Calculate the budget
     // Display the budget on the UI
