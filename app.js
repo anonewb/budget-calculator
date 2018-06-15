@@ -66,6 +66,8 @@ var budgetController = (function() {
 })(); // IIFE
 
 
+
+
 // UI CONTROLLER
 var UIController = (function() {
 
@@ -73,7 +75,9 @@ var UIController = (function() {
     inputType: '.add__type',
     inputDesc: '.add__description',
     inputValue: '.add__value',
-    inputBtn:'.add__btn'
+    inputBtn:'.add__btn',
+    incomeContainerList: '.income__list',
+    expensesContainerList: '.expenses__list'
   }
 
   return {
@@ -84,12 +88,61 @@ var UIController = (function() {
         value: document.querySelector(DOMSelectors.inputValue).value
       };
     },
+    addListItem: function(obj, type) {
+      var html, element;
+
+      // create HTML template of inc/exp listItem to be added
+      if (type === 'inc') {
+        element = DOMSelectors.incomeContainerList;
+        html = `
+          <div class="item clearfix" id="income-${obj.id}">
+            <div class="item__description">${obj.description}</div>
+            <div class="right clearfix">
+                <div class="item__value">+ ${obj.value}</div>
+                <div class="item__delete">
+                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                </div>
+            </div>
+          </div>
+        `;
+      } else if (type === 'exp') {
+        element = DOMSelectors.expensesContainerList;
+        html = `
+          <div class="item clearfix" id="expense-${obj.id}">
+            <div class="item__description">${obj.description}</div>
+            <div class="right clearfix">
+                <div class="item__value">- ${obj.value}</div>
+                <div class="item__percentage">21%</div>
+                <div class="item__delete">
+                    <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // insert HTML into DOM
+      document.querySelector(element).insertAdjacentHTML('beforeend', html);
+
+      //** .insertAdjacentHTML()----> element.insertAdjacentHTML(position, text);
+      // <p>tag is the element and position can be: 
+      // <!-- beforebegin -->
+      // <p>
+      //   <!-- afterbegin -->
+      //   foo
+      //   <!-- beforeend -->  <----- we used this to add at end of ul but before ul closes
+      // </p>
+      // <!-- afterend -->
+
+    },
     getDOMSelectors: function() {
       return DOMSelectors;
     }
   }
 
 })(); // IIFE
+
+
 
 
 // APP CONTROLLER
@@ -121,6 +174,8 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
     var newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
     // Add item to the UI
+    UICtrl.addListItem(newItem, input.type);
+
     // Calculate the budget
     // Display the budget on the UI
 
