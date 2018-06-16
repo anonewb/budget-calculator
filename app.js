@@ -27,9 +27,20 @@ var budgetController = (function() {
     totals: {
       exp: 0,
       inc: 0
-    }
+    },
+    budget: 0,
+    percentage: -1  
   }
 
+  var calculateTotal = function(type) {
+    var sum = 0;
+    data.allItems[type].forEach(function(current) {
+      sum += current.value;
+    });
+    data.totals[type] = sum;
+  };
+
+    //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
   return {
     addItem: function(type, desc, val) {
       var newItem, ID, typeID;
@@ -58,6 +69,33 @@ var budgetController = (function() {
 
       return newItem;
     },
+    calculateBudget: function() {
+      
+      // cal total income and expense
+      calculateTotal('inc');
+      calculateTotal('exp');
+
+      // cal the budget: income - expense
+      data.budget = data.totals.inc - data.totals.exp;
+
+      if (data.totals.inc > 0) {
+        // cal the % if income that we spent
+        data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+      } else {
+        data.percentage = -1;
+      }
+      
+    },
+    getBudget: function() {
+
+      //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
+      return {
+        budget: data.budget,
+        totalInc: data.totals.inc,
+        totalExp: data.totals.exp,
+        percentage: data.percentage,
+      }
+    },
     dataLog: function() { // Created just to view the private Data Structure
       console.log(data); // Run 'budgetController.dataLog()' in console to view DS(data obj)
     }
@@ -80,6 +118,7 @@ var UIController = (function() {
     expensesContainerList: '.expenses__list'
   }
 
+  //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
   return {
     getInput: function() {
       return {
@@ -202,13 +241,19 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
   var updateBudget = function() {
 
     // 1. Calculate the budget
+    budgetCtrl.calculateBudget();
+
     // 2. return the budget
+    var budget = budgetCtrl.getBudget();
+
     // 3. Display the budget on the UI
+    console.log(budget);
 
   }
 
   // public methods: can be accessed by outside modules
-  return {
+  //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
+  return { 
     init: function() {
       LoadEventListeners();
     }
