@@ -93,7 +93,7 @@ var budgetController = (function() {
         budget: data.budget,
         totalInc: data.totals.inc,
         totalExp: data.totals.exp,
-        percentage: data.percentage,
+        percentage: data.percentage
       }
     },
     dataLog: function() { // Created just to view the private Data Structure
@@ -109,13 +109,18 @@ var budgetController = (function() {
 // UI CONTROLLER
 var UIController = (function() {
 
+  // if class name changes in HTML, then we have to update that name inside here only
   var DOMSelectors = {
     inputType: '.add__type',
     inputDesc: '.add__description',
     inputValue: '.add__value',
     inputBtn:'.add__btn',
     incomeContainerList: '.income__list',
-    expensesContainerList: '.expenses__list'
+    expensesContainerList: '.expenses__list',
+    budgetLabel: '.budget__value',
+    incomeLabel: '.budget__income--value',
+    expensesLabel: '.budget__expenses--value',
+    percentageLabel: '.budget__expenses--percentage'
   }
 
   //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
@@ -185,6 +190,17 @@ var UIController = (function() {
       });
       fieldsArr[0].focus();
     },
+    displayBudget: function(obj) {
+      document.querySelector(DOMSelectors.budgetLabel).textContent = obj.budget;
+      document.querySelector(DOMSelectors.incomeLabel).textContent = obj.totalInc;
+      document.querySelector(DOMSelectors.expensesLabel).textContent = obj.totalExp;
+      
+      if (obj.percentage > 0) {
+        document.querySelector(DOMSelectors.percentageLabel).textContent = obj.percentage + '%';
+      } else {
+        document.querySelector(DOMSelectors.percentageLabel).textContent = '-';
+      }
+    },
     getDOMSelectors: function() {
       return DOMSelectors;
     }
@@ -247,7 +263,7 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
     var budget = budgetCtrl.getBudget();
 
     // 3. Display the budget on the UI
-    console.log(budget);
+    UICtrl.displayBudget(budget);
 
   }
 
@@ -255,6 +271,13 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
   //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
   return { 
     init: function() {
+      // Displaying begining values of budget on the UI
+      UICtrl.displayBudget({
+        budget: 0,
+        totalInc: 0,
+        totalExp: 0,
+        percentage: -1
+      });
       LoadEventListeners();
     }
   }
