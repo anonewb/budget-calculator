@@ -120,7 +120,8 @@ var UIController = (function() {
     budgetLabel: '.budget__value',
     incomeLabel: '.budget__income--value',
     expensesLabel: '.budget__expenses--value',
-    percentageLabel: '.budget__expenses--percentage'
+    percentageLabel: '.budget__expenses--percentage',
+    container: '.container'
   }
 
   //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
@@ -228,6 +229,8 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
       }
     });
 
+    document.querySelector(DOMSelectors.container).addEventListener('click', ctrlDeleteItem);
+
   }
 
   var ctrlAddItem = function() {
@@ -265,6 +268,19 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
     // 3. Display the budget on the UI
     UICtrl.displayBudget(budget);
 
+  }
+
+  var ctrlDeleteItem = function(e) {
+    var itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
+    if (itemID) {
+      var splitID = itemID.split('-');
+      var type = splitID[0];
+      var ID = splitID[1];
+
+      // 1. del item from DS
+      // 2. del item from UI
+      // 3. update and show the new budget
+    }
   }
 
   // public methods: can be accessed by outside modules
