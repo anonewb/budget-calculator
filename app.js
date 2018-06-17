@@ -277,8 +277,11 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
       // 4. clear the fields
       UICtrl.clearFields();
 
-      // 5. calculate and update budget
+      // 5. cal and update budget
       updateBudget();
+
+      // 6. cal and update %
+      updatePercentages();
       
     }
 
@@ -297,6 +300,19 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
 
   }
 
+  var updatePercentages = function() {
+
+    // 1. Calculate %
+    
+
+    // 2. Read % from budgetCtrl
+    
+
+    // 3. Display the UI with new %
+    
+
+  }
+
   var ctrlDeleteItem = function(e) {
     var itemID, splitID, type, ID;
 
@@ -312,6 +328,8 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
       UICtrl.deleteListItem(itemID);
       // 3. update and show the new budget
       updateBudget();
+      // 4. cal and update %
+      updatePercentages();
     }
   }
 
