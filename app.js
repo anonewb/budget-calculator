@@ -30,7 +30,7 @@ var budgetController = (function() {
     },
     budget: 0,
     percentage: -1  
-  }
+  };
 
   var calculateTotal = function(type) {
     var sum = 0;
@@ -69,6 +69,29 @@ var budgetController = (function() {
 
       return newItem;
     },
+    deleteItem: function(type, id) {
+      var ids, index;
+      
+      // id = 6
+      //data.allItems[type][id];
+      // ids = [1 2 4  8]
+      //index = 3
+      
+      // diff betw map and forEach is map() returns with new Array, while forEach() doesnt return
+
+      console.log(data);
+
+      ids = data.allItems[type].map(function(current) {
+          return current.id;
+      });
+
+      index = ids.indexOf(id);
+
+      if (index !== -1) {
+          data.allItems[type].splice(index, 1);
+      }
+      
+  },
     calculateBudget: function() {
       
       // cal total income and expense
@@ -140,7 +163,7 @@ var UIController = (function() {
       if (type === 'inc') {
         element = DOMSelectors.incomeContainerList;
         html = `
-          <div class="item clearfix" id="income-${obj.id}">
+          <div class="item clearfix" id="inc-${obj.id}">
             <div class="item__description">${obj.description}</div>
             <div class="right clearfix">
                 <div class="item__value">+ ${obj.value}</div>
@@ -153,7 +176,7 @@ var UIController = (function() {
       } else if (type === 'exp') {
         element = DOMSelectors.expensesContainerList;
         html = `
-          <div class="item clearfix" id="expense-${obj.id}">
+          <div class="item clearfix" id="exp-${obj.id}">
             <div class="item__description">${obj.description}</div>
             <div class="right clearfix">
                 <div class="item__value">- ${obj.value}</div>
@@ -271,13 +294,16 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
   }
 
   var ctrlDeleteItem = function(e) {
-    var itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
+    var itemID, splitID, type, ID;
+
+    itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
     if (itemID) {
-      var splitID = itemID.split('-');
-      var type = splitID[0];
-      var ID = splitID[1];
+      splitID = itemID.split('-');
+      type = splitID[0];
+      ID = parseInt(splitID[1]);
 
       // 1. del item from DS
+      budgetCtrl.deleteItem(type, ID);
       // 2. del item from UI
       // 3. update and show the new budget
     }
