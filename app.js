@@ -171,7 +171,8 @@ var UIController = (function() {
     expensesLabel: '.budget__expenses--value',
     percentageLabel: '.budget__expenses--percentage',
     container: '.container',
-    expPerLabel: '.item__percentage'
+    expPerLabel: '.item__percentage',
+    dateLabel: '.budget__title--month'
   }
 
   var formatNumber = function(num, type) {
@@ -302,6 +303,14 @@ var UIController = (function() {
         } 
       });
     },
+    displayMonth: function() {
+      var now = new Date();
+      // var christmas = new Date(2018, 11, 25);
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var month = now.getMonth();
+      var year = now.getFullYear();
+      document.querySelector(DOMSelectors.dateLabel).textContent = months[month] + ', ' + year;
+    },
     getDOMSelectors: function() {
       return DOMSelectors;
     }
@@ -411,6 +420,7 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
   //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
   return { 
     init: function() {
+      UICtrl.displayMonth();
       // Displaying begining values of budget on the UI
       UICtrl.displayBudget({
         budget: 0,
