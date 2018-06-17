@@ -174,6 +174,33 @@ var UIController = (function() {
     expPerLabel: '.item__percentage'
   }
 
+  var formatNumber = function(num, type) {
+    var numSplit, int, dec, type;
+    /*
+        + or - before number
+        exactly 2 decimal points
+        comma separating the thousands
+
+        2310.4567 -> + 2,310.46
+        2000 -> + 2,000.00
+        */
+
+    num = Math.abs(num);
+    num = num.toFixed(2);
+
+    numSplit = num.split('.');
+
+    int = numSplit[0];
+    if (int.length > 3) {
+        int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3); //input 23510, output 23,510
+    }
+
+    dec = numSplit[1];
+
+    return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+
+};
+
   //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
   return {
     getInput: function() {
@@ -193,7 +220,7 @@ var UIController = (function() {
           <div class="item clearfix" id="inc-${obj.id}">
             <div class="item__description">${obj.description}</div>
             <div class="right clearfix">
-                <div class="item__value">+ ${obj.value}</div>
+                <div class="item__value">${formatNumber(obj.value, type)}</div>
                 <div class="item__delete">
                     <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                 </div>
@@ -206,7 +233,7 @@ var UIController = (function() {
           <div class="item clearfix" id="exp-${obj.id}">
             <div class="item__description">${obj.description}</div>
             <div class="right clearfix">
-                <div class="item__value">- ${obj.value}</div>
+                <div class="item__value">${formatNumber(obj.value, type)}</div>
                 <div class="item__percentage">21%</div>
                 <div class="item__delete">
                     <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
@@ -246,9 +273,12 @@ var UIController = (function() {
       fieldsArr[0].focus();
     },
     displayBudget: function(obj) {
-      document.querySelector(DOMSelectors.budgetLabel).textContent = obj.budget;
-      document.querySelector(DOMSelectors.incomeLabel).textContent = obj.totalInc;
-      document.querySelector(DOMSelectors.expensesLabel).textContent = obj.totalExp;
+      var type;
+      obj.budget > 0 ? type = 'inc' : type = 'exp';
+
+      document.querySelector(DOMSelectors.budgetLabel).textContent = formatNumber(obj.budget, type);
+      document.querySelector(DOMSelectors.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+      document.querySelector(DOMSelectors.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
       
       if (obj.percentage > 0) {
         document.querySelector(DOMSelectors.percentageLabel).textContent = obj.percentage + '%';
