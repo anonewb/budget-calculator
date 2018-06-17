@@ -200,7 +200,13 @@ var UIController = (function() {
 
     return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
 
-};
+  };
+
+  var nodeListForEach = function(list, callback) {
+    for(var i=0; i<list.length; i++) {
+      callback(list[i], i);
+    }
+  };
 
   //*** When we want to 'return' multiple values, insert all the values inside '{}' ie object
   return {
@@ -289,11 +295,6 @@ var UIController = (function() {
     },
     displayPercentages: function(percentages) {
       var fields = document.querySelectorAll(DOMSelectors.expPerLabel);
-      var nodeListForEach = function(list, callback) {
-        for(var i=0; i<list.length; i++) {
-          callback(list[i], i);
-        }
-      };
 
       nodeListForEach(fields, function(current, index) {
         if (percentages[index]>0) {
@@ -310,6 +311,17 @@ var UIController = (function() {
       var month = now.getMonth();
       var year = now.getFullYear();
       document.querySelector(DOMSelectors.dateLabel).textContent = months[month] + ', ' + year;
+    },
+    changeType: function() {
+      var fields = document.querySelectorAll(
+        DOMSelectors.inputType + ',' +
+        DOMSelectors.inputDesc + ',' +
+        DOMSelectors.inputValue
+      );
+      nodeListForEach(fields, function(cur) {
+        cur.classList.toggle('red-focus');
+      });
+      document.querySelector(DOMSelectors.inputBtn).classList.toggle('red');
     },
     getDOMSelectors: function() {
       return DOMSelectors;
@@ -339,6 +351,8 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
     });
 
     document.querySelector(DOMSelectors.container).addEventListener('click', ctrlDeleteItem);
+
+    document.querySelector(DOMSelectors.inputType).addEventListener('change', UICtrl.changeType);
 
   }
 
