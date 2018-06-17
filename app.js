@@ -8,7 +8,22 @@ var budgetController = (function() {
     this.id = id;
     this.description = description;
     this.value = value;
+    this.percentage = -1;
   }
+
+  //*** We create methods inside constructor on the prototype object so that
+        //  all the newly created/instance objects from the constructor can inherit this methods easily through prototype chain
+  Expense.prototype.calcPercentage = function(totalIncome) {
+    if (totalIncome>0) {
+      this.percentage = Math.round((this.value/totalIncome)*100);
+    } else {
+      this.percentage = -1;
+    }
+  }
+
+  Expense.prototype.getPercentage = function() {
+    return this.percentage;
+  };
 
   var Income = function(id, description, value) {
     this.id = id;
@@ -108,6 +123,17 @@ var budgetController = (function() {
         data.percentage = -1;
       }
       
+    },
+    calculatePercentages: function() {  
+      data.allItems.exp.forEach(function(cur) {
+        cur.calcPercentage(data.totals.inc);
+      });
+    },
+    getPercentages: function() {
+      var allPerc = data.allItems.exp.map(function(cur) {
+        return cur.getPercentage();
+      });
+      return allPerc;
     },
     getBudget: function() {
 
@@ -303,13 +329,13 @@ var controller = (function(budgetCtrl, UICtrl) { //* Used slightly different nam
   var updatePercentages = function() {
 
     // 1. Calculate %
-    
+    budgetCtrl.calculatePercentages();
 
     // 2. Read % from budgetCtrl
-    
+    var percentages = budgetCtrl.getPercentages();
 
     // 3. Display the UI with new %
-    
+    console.log(percentages);
 
   }
 
